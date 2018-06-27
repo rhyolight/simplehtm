@@ -110,33 +110,20 @@ describe('cyclic encoders', () => {
         })
     })
 
-    // describe('when 7 values 7 buckets and range 1', () => {
-    //     let values = 7,
-    //         buckets = 7,
-    //         range = 1,
-    //         encoder = new CyclicEncoder({
-    //             values: values,
-    //             buckets: buckets,
-    //             range: range,
-    //         })
-    //     it('has the correct resolution', () => {
-    //         expect(encoder.resolution).to.equal(1)
-    //     })
-    // })
-    //
-    // describe('when 7 values 21 buckets and range 3', () => {
-    //     let values = 7,
-    //         buckets = 21,
-    //         range = 3,
-    //         encoder = new CyclicEncoder({
-    //             values: values,
-    //             buckets: buckets,
-    //             range: range,
-    //         })
-    //     it('has the correct resolution', () => {
-    //         expect(encoder.resolution).to.equal(1)
-    //     })
-    // })
+    describe('testing min and max', () => {
+        it('min is inclusive', () => {
+            let encoder = new CyclicEncoder({
+                min: 0, max: 180, w: 6
+            })
+            expect(encoder.encode(0)).to.deep.equal([1,1,1,0,0,0,0,0,0,0])
+        })
+        it('max is inclusive', () => {
+            let encoder = new CyclicEncoder({
+                min: 0, max: 180, w: 6
+            })
+            expect(encoder.encode(180)).to.deep.equal([0,0,0,0,0,0,0,1,1,1])
+        })
+    })
 
     describe('when encoding days of week', () => {
         it('encodes a unique bit range per day with 1 bit range', () => {

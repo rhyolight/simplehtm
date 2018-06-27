@@ -75,9 +75,8 @@ class ScalarEncoder {
     // Accepts a scalar value within the input domain, returns an
     // array of bits representing the value.
     encode(value) {
-        // Create an array of n zeros JavaScript style :P
-        let out = Array.apply(null, Array(this.n))
-            .map(Number.prototype.valueOf,0);
+        // Create an array of n zeros
+        let out = new Array(this.n).fill(0)
         // Using the scale, get the corresponding integer
         // index for this value
         let index = Math.floor(this.scale(value))
