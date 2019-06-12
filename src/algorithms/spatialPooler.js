@@ -1,6 +1,6 @@
 let d3 = require('d3')
 
-class SpatialPooler  {
+class SpatialPooler {
 
 	constructor(opts) {
 		this.opts = opts
@@ -12,7 +12,7 @@ class SpatialPooler  {
 	getPotentialPools() {
 		return this._potentialPools
 	}
-  
+
 	_createPotentialPools() {
 		let pools = []
 		for (let i = 0; i < this.opts.size; i++) {
