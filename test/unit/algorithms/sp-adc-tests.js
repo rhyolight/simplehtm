@@ -8,38 +8,38 @@ describe('when calculating active duty cycles', () => {
 
 	const spSize = defaultSpSize
 
-	const sp = new SpatialPooler({
-		// Assume 1D input, global inhibition, no topology
-		size: spSize,
-	})
-
 	describe('with no window size', () => {
 
+		const sp = new SpatialPooler({
+			// Assume 1D input, global inhibition, no topology
+			size: spSize,
+		})
+
 		const firstWinners = [
-			{index: 3},
-			{index: 7},
+			{ index: 3 },
+			{ index: 7 },
 		]
 		const firstIndices = firstWinners.map(w => w.index)
 		const secondWinners = [
-			{index: 4},
-			{index: 8},
+			{ index: 4 },
+			{ index: 8 },
 		]
 		const secondIndices = secondWinners.map(w => w.index)
 
 		it('on first computation', () => {
-			
+
 			const adcs = sp.computeActiveDutyCycles(firstWinners)
-			assert.lengthOf(adcs, spSize, 
+			assert.lengthOf(adcs, spSize,
 				'Active duty cycles should be same dimension of SP')
-			
+
 			const winnerIndices = firstWinners.map(w => w.index)
 			adcs.forEach((adc, mcIndex) => {
 
 				if (winnerIndices.includes(mcIndex)) {
-					assert.equal(adc, 1.0, 
+					assert.equal(adc, 1.0,
 						`on first compute, winner ACD at ${mcIndex} should be 1.0`)
 				} else {
-					assert.equal(adc, 0.0, 
+					assert.equal(adc, 0.0,
 						`on first compute, loser ACD at ${mcIndex} should be 0.0`)
 				}
 			})
@@ -51,10 +51,10 @@ describe('when calculating active duty cycles', () => {
 			adcs.forEach((adc, mcIndex) => {
 
 				if (winnerIndices.includes(mcIndex)) {
-					assert.equal(adc, 1.0, 
+					assert.equal(adc, 1.0,
 						`on second compute, winner ACD at ${mcIndex} should be 1.0`)
 				} else {
-					assert.equal(adc, 0.0, 
+					assert.equal(adc, 0.0,
 						`on second compute, loser ACD at ${mcIndex} should be 0.0`)
 				}
 			})
@@ -82,6 +82,28 @@ describe('when calculating active duty cycles', () => {
 		})
 
 
+	})
+
+	describe('with a fixed window size', () => {
+		const dutyCyclePeriod = 10
+		const sp = new SpatialPooler({
+			// Assume 1D input, global inhibition, no topology
+			size: spSize,
+			dutyCyclePeriod: dutyCyclePeriod,
+		})
+
+		it('forgets activations outside duty cycle period', () => {
+			let adcs
+			for (let i = 0; i < dutyCyclePeriod; i++) {
+				adcs = sp.computeActiveDutyCycles([{ index: 0 }])
+			}
+			assert.equal(adcs[0], 1.0,
+				`ADC should be 100% after ${dutyCyclePeriod} reps within period`)
+			adcs = sp.computeActiveDutyCycles([{ index: 1 }])
+			assert.equal(adcs[0], 0.9,
+				`ADC should be 90% after ${dutyCyclePeriod} reps within period`)
+
+		})
 	})
 
 })

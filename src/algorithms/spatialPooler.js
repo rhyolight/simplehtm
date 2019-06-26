@@ -11,6 +11,7 @@ class SpatialPooler {
 		this._learningEnabled = !!this.opts.learn
 		this._adcs = this._createActiveDutyCycles()
 		this._computeCount = 0
+		this._adcPeriodAdjustment = undefined
 	}
 
 	getPotentialPools() {
@@ -100,13 +101,15 @@ class SpatialPooler {
 
 	computeActiveDutyCycles(winners) {
 		this._computeCount++
+		const period = this.opts.dutyCyclePeriod || this._computeCount
 		const out = []
 		const winnerIndices = winners.map(w => w.index)
 		for (let mcIndex = 0; mcIndex < this.opts.size; mcIndex++) {
 			if (winnerIndices.includes(mcIndex)) {
 				this._adcs[mcIndex]++
 			}
-			out.push(this._adcs[mcIndex] / this._computeCount)
+			const periodCount = this._adcs[mcIndex]
+			out.push(periodCount / period)
 		}
 		return out
 	}
